@@ -13,8 +13,13 @@ public class PlayerController : MonoBehaviour {
 	private float maxSpeed = 10f;
 	private float acceleration = 1f;
 
+	private int cameraDist = 20;
+
+	Camera camera;
+
 	void Start () {
 		rBody = GetComponent<Rigidbody>();
+		camera = Camera.mainCamera;
 	}
 
 	void Update () {
@@ -38,7 +43,7 @@ public class PlayerController : MonoBehaviour {
 		movedirection = curMovement;
 		movedirection = new Vector3(movedirection.x * friction, 0, movedirection.z * friction);
 		//curMovement = new Vector3(-Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
-
+		camera.transform.position = new Vector3(rBody.position.x, cameraDist, rBody.position.z);
 		rBody.MovePosition(rBody.position + (movedirection * movementSpeed * Time.deltaTime));
 	}
 }
