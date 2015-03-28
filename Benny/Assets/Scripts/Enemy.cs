@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour {
 
 	private float[] functional;
 	private float[] cosmetics;
-	private int[] links;
+	private static int[] links;
 
 	void printFloatArray (float[] printArray) {
 		string newString = "";
@@ -38,14 +38,18 @@ public class Enemy : MonoBehaviour {
 	void getStats () {
 		functional = new float[4];
 		cosmetics = new float[6];
-		links = new int[cosmetics.Length];
 
 		for(int i = 0 ; i < functional.Length ; i++){
 			functional[i] = Random.value;
 		}
-		for(int i = 0 ; i < links.Length ; i++){
-			links[i] = Random.Range(1, functional.Length);
+
+		if (links == null){
+			links = new int[cosmetics.Length];
+			for(int i = 0 ; i < links.Length ; i++){
+				links[i] = Random.Range(0, functional.Length);
+			}
 		}
+
 		for(int i = 0 ; i < cosmetics.Length ; i++){
 			cosmetics[i] = functional[links[i]];
 		}
