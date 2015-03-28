@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : Humanoid {
 	// Use this for initialization
-	float speed;
-	float sight;
-	float resistance;
-	float strength;
+
 				
 	float skinColor;
 	float hatColor;

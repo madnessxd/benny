@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : Humanoid {
 
 	public const float movementSpeed = 1;
 
 	private Rigidbody rBody;
+	private Renderer renderer;
 	private Vector3 movedirection;
 	private Vector3 curMovement;
 
@@ -23,8 +24,8 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
-		float movementX = movedirection.x + -(Input.GetAxis("Vertical") * acceleration);
-		float movementZ = movedirection.z + (Input.GetAxis("Horizontal") * acceleration);
+		float movementX = movedirection.x + (Input.GetAxis("Horizontal") * acceleration);
+		float movementZ = movedirection.z + (Input.GetAxis("Vertical") * acceleration);
 
 		if (movementX > maxSpeed){
 			movementX = maxSpeed;
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour {
 		movedirection = curMovement;
 		movedirection = new Vector3(movedirection.x * friction, 0, movedirection.z * friction);
 		//curMovement = new Vector3(-Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
-		camera.transform.position = new Vector3(rBody.position.x, cameraDist, rBody.position.z);
+		camera.transform.position = new Vector3(rBody.position.x, cameraDist, rBody.position.z - 10);
 		rBody.MovePosition(rBody.position + (movedirection * movementSpeed * Time.deltaTime));
 	}
 }
