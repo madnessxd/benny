@@ -2,9 +2,7 @@
 using System.Collections;
 
 public class Enemy : Humanoid {
-	// Use this for initialization
-
-				
+	// Use this for initialization				
 	float skinColor;
 	float hatColor;
 	float hight;
@@ -63,12 +61,12 @@ public class Enemy : Humanoid {
 		headSize = cosmetics[4];
 		headShape = cosmetics[5];
 
-		printFloatArray(functional);
+		/*printFloatArray(functional);
 		Debug.Log("-----");
 		printFloatArray(cosmetics);
 		Debug.Log("-----");
 		printIntArray(links);
-		Debug.Log("---END---");
+		Debug.Log("---END---");*/
 
 
 	}
