@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : Humanoid {
 	
+	public Transform laserTrans;	
+	private Transform laser;
+
 	public const float movementSpeed = 1;
 	
 	private Rigidbody rBody;
@@ -16,7 +19,7 @@ public class PlayerController : Humanoid {
 	private int cameraDist = 20;
 	
 	private Vector3 movement = new Vector3();
-	
+
 	
 	Camera camera;
 	
@@ -92,5 +95,19 @@ public class PlayerController : Humanoid {
 		//camera.transform.position = new Vector3(0, cameraDist, 0);
 		//camera.transform.position.y = -10;
 		//checkCollisions ();
+
+		if(Input.GetKey("space")){
+			if (laser == null){
+				Debug.Log("create laser");
+				laser = Instantiate(laserTrans, new Vector3(rBody.transform.position.x + vecX, 0, rBody.transform.position.z + vecZ), rBody.transform.rotation) as Transform;
+			} else {
+				laser.transform.position = new Vector3(rBody.transform.position.x + vecX, 0, rBody.transform.position.z + vecZ);
+				laser.transform.rotation = rBody.transform.rotation;
+			}
+		} else {
+			if (laser != null){
+				Destroy(laser.gameObject);
+			}
+		}
 	}
 }

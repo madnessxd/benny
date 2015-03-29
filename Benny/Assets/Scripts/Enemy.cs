@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Enemy : Humanoid {
+	Transform[] neighbours;
 	// Use this for initialization				
 	float skinColor = 0;
 	float hatColor = 0;
@@ -139,12 +140,45 @@ public class Enemy : Humanoid {
 	}
 
 	void Update () {
-		curPosition = curPosition + (moveDirection * speed * 5 * Time.deltaTime);	
-		rBody.transform.position = curPosition;
+		//calculateNeighbours();
 
+		move ();
 		float rotY = Mathf.Atan2(moveDirection.x, moveDirection.z) / Mathf.PI * 180;
 		if(!float.IsNaN(rotY)){
 			rBody.transform.rotation = Quaternion.Euler(0, rotY, 0);
 		}
+	}
+
+	void move () {
+		curPosition = curPosition + (moveDirection * speed * 5 * Time.deltaTime);	
+		rBody.transform.position = curPosition;
+
+	}
+
+	/*float centerize(){
+	}
+
+	float avoid() {
+	}
+
+	float match () {
+	}*/
+
+	void calculateNeighbours(){
+		int threshold = 100;
+
+		/*
+		neighbours = [];
+
+		if(neighbours.Length <= 0)
+			for each Enemy 
+		{
+			if( Distance To Enemy < threshold 
+			neighbours.push( Enemy ) ;
+		}
+		*/
+
+		//neighbours = EnemySpawner.enemies;
+		//Debug.Log(neighbours.Length);
 	}
 }
