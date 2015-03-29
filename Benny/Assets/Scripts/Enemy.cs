@@ -3,16 +3,38 @@ using System.Collections;
 
 public class Enemy : Humanoid {
 	// Use this for initialization				
-	float skinColor;
-	float hatColor;
-	float hight;
-	float width;
-	float headSize;
-	float headShape;
+	float skinColor = 0;
+	float hatColor = 0;
+	float height = 0;
+	float width = 0;
+	float headSize = 0;
+	float headShape = 0;
 
 	private float[] functional;
 	private float[] cosmetics;
 	private static int[] links;
+
+	private Transform model;
+	private Renderer renderer;
+
+	Vector3 moveDirection;
+	Vector3 curPosition;
+
+	private Rigidbody rBody;
+
+	void setDirection (Vector3 direction){
+		moveDirection = direction;
+	}
+
+	void run (Vector3 playerPos){
+		float dist = Mathf.Sqrt(Mathf.Pow(curPosition.x - playerPos.x, 2) + Mathf.Pow(curPosition.z - playerPos.z, 2));
+		setDirection((curPosition - playerPos) / dist);
+		setDirection(new Vector3(moveDirection.x, 0, moveDirection.z));
+	}
+
+	void setPosition (Vector3 position){
+		curPosition = position;
+	}
 
 	void printFloatArray (float[] printArray) {
 		string newString = "";
@@ -28,6 +50,34 @@ public class Enemy : Humanoid {
 			newString += printArray[i] + ", ";
 		}
 		Debug.Log(newString);
+	}
+
+	void paintChildren(Transform a)	{
+		foreach (Transform b in a)
+		{
+			if(b.GetComponent<Renderer>()){
+				foreach(Renderer r in b.GetComponents<Renderer> ()) {
+					for(int i = 0 ; i < r.materials.Length ; i++){ 
+						float colR = 1f;
+						float colG = 1f;
+						float colB = 0f;	
+
+						/*if(r.materials[i].name.Equals("Trim 2 (Instance)")){
+							colR = skinColor; colG = headSize;
+						}*/
+
+						switch(r.materials[i].name){
+							case "Trim 2 (Instance)": colR = skinColor; colG = headSize; break;
+							case "Skin 2 (Instance)": colG = hatColor; colB = headShape; break;
+							case "ColorVariation 2 (Instance)": colR = skinColor; colB = height; break;
+							case "ColorIllum 2 (Instance)": colR = width; colB = hatColor; break;
+						}
+						r.materials[i].SetColor("_Color", new Color(colR, colG, colB));
+					}
+				}
+			}
+			paintChildren(b);
+		}
 	}
 
 	void getStats () {
@@ -56,27 +106,45 @@ public class Enemy : Humanoid {
 
 		skinColor = cosmetics[0];
 		hatColor = cosmetics[1];
-		hight = cosmetics[2];
+		height = cosmetics[2];
 		width = cosmetics[3];
 		headSize = cosmetics[4];
 		headShape = cosmetics[5];
 
-		/*printFloatArray(functional);
-		Debug.Log("-----");
-		printFloatArray(cosmetics);
-		Debug.Log("-----");
-		printIntArray(links);
-		Debug.Log("---END---");*/
+		//speed = Mathf.Round(speed);
+		sight = Mathf.Round(sight);
+		resistance = Mathf.Round(resistance);
+		strength = Mathf.Round(strength);
 
+		skinColor = Mathf.Round(skinColor);
+		hatColor = Mathf.Round(hatColor);
+		width = Mathf.Round(width);
+		height = Mathf.Round(height);
+		headSize = Mathf.Round(headSize);
+		headShape = Mathf.Round(headShape);
 
+		transform.localScale += new Vector3(width * 0.5f, height * 0.5f, width * 0.5f);
 	}
 
 	void Start () {
+		rBody = GetComponent<Rigidbody>();
+		moveDirection = new Vector3((Random.value * 2) - 1, 0, (Random.value * 2) - 1);
+		float vecLength = Mathf.Sqrt(Mathf.Pow(moveDirection.x, 2) + Mathf.Pow(moveDirection.z, 2));
+		moveDirection = new Vector3(moveDirection.x / vecLength, 0, moveDirection.z / vecLength);
+
+		curPosition = transform.position;
+
 		getStats();
+		paintChildren(transform);
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
-	
+		curPosition = curPosition + (moveDirection * speed * 5 * Time.deltaTime);	
+		rBody.transform.position = curPosition;
+
+		float rotY = Mathf.Atan2(moveDirection.x, moveDirection.z) / Mathf.PI * 180;
+		if(!float.IsNaN(rotY)){
+			rBody.transform.rotation = Quaternion.Euler(0, rotY, 0);
+		}
 	}
 }

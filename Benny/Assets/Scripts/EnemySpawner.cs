@@ -5,7 +5,7 @@ public class EnemySpawner : MonoBehaviour {
 	public Transform enemy;
 
 	void spawnRandom() {
-		Instantiate(enemy, new Vector3(Random.value * 20 - 10, 0.5f, Random.Range(-10, 10)), Quaternion.identity);
+		Instantiate(enemy, new Vector3(Random.value * 20 - 10, 1f, Random.Range(-10, 10)), Quaternion.identity);
 	}
 
 	// Use this for initialization
