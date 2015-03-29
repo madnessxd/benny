@@ -173,6 +173,11 @@ public class Enemy : Humanoid {
 		}
 	}
 
+	void OnCollisionStay (Collision col)
+	{
+		randomDir ();
+	}
+
 	void move () {
 		curPosition = curPosition + (moveDirection * speed * 5 * Time.deltaTime);	
 		rBody.transform.position = curPosition;

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerController : Humanoid {
@@ -7,7 +7,7 @@ public class PlayerController : Humanoid {
 	private Transform laser;
 
 	public const float movementSpeed = 1;
-	public const float absorbRatio = .7f;
+	public const float absorbRatio = .3f;
 
 	private Rigidbody rBody;
 	private Renderer renderer;
@@ -28,13 +28,15 @@ public class PlayerController : Humanoid {
 
 	private Transform gameOver;
 
+	private int kills = 0;
+
 	Camera camera;
 
 	void Start () {
 		//gameOver = GameObject.FindGameObjectWithTag ("GameOver");
 		//gameOver.renderer.enabled = false;
 		rBody = GetComponent<Rigidbody>();
-		camera = Camera.mainCamera;
+		camera = Camera.main;
 	}
 
 	void BoostSpeed (float speed) {
@@ -84,7 +86,7 @@ public class PlayerController : Humanoid {
 		healthBar.transform.localScale = (new Vector3(1, yScale, 1));
 	}
 
-	void OnCollisionEnter (Collision col)
+	void OnCollisionStay (Collision col)
 	{
 		Debug.Log(col.gameObject.name);
 		if(col.gameObject.name == "Enemy(Clone)")
@@ -92,6 +94,14 @@ public class PlayerController : Humanoid {
 			GameObject[] enemies = GameObject.FindGameObjectsWithTag ("Enemy");
 			for (int i = 0 ; i < enemies.Length ; i++){			
 				enemies[i].SendMessage ("run", rBody.position);
+				if(enemies[i] == col.gameObject){
+					enemies[i] = null;
+				}
+			}
+			kills++;
+			if(kills % 5 == 0){
+				GameObject[] enemySpawner = GameObject.FindGameObjectsWithTag ("EnemySpawner");
+				enemySpawner[0].SendMessage("Spawn", 10);
 			}
 			absorbSkills(col.gameObject);
 			Destroy(col.gameObject);	

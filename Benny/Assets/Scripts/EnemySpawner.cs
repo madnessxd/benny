@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class EnemySpawner : MonoBehaviour {
@@ -10,12 +10,16 @@ public class EnemySpawner : MonoBehaviour {
 		Instantiate(enemy, new Vector3(Random.value * 20 - 10, 1f, Random.Range(-10, 10)), Quaternion.identity);
 	}*/
 
+	void Spawn(int number)
+	{
+		for(int i = 0 ; i < number ; i++){
+			//spawnRandom();
+			Instantiate(enemy, new Vector3(Random.value * 20 - 10, 3f, Random.Range(-10, 10)), Quaternion.identity);
+		}
+	}
 	// Use this for initialization
 	void Start () {
-		for(int i = 0 ; i < 10 ; i++){
-			//spawnRandom();
-			Instantiate(enemy, new Vector3(Random.value * 20 - 10, 1f, Random.Range(-10, 10)), Quaternion.identity);
-		}
+		Spawn(10);
 	}
 	
 	// Update is called once per frame
