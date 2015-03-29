@@ -23,14 +23,32 @@ public class Enemy : Humanoid {
 
 	private Rigidbody rBody;
 
+	private Vector3 lastKillPos;
+
+	private float runDist = 30;
+
 	void setDirection (Vector3 direction){
 		moveDirection = direction;
 	}
 
 	void run (Vector3 playerPos){
 		float dist = Mathf.Sqrt(Mathf.Pow(curPosition.x - playerPos.x, 2) + Mathf.Pow(curPosition.z - playerPos.z, 2));
-		setDirection((curPosition - playerPos) / dist);
-		setDirection(new Vector3(moveDirection.x, 0, moveDirection.z));
+		if (dist < (runDist - 1)){
+			setDirection((curPosition - playerPos) / dist);
+			setDirection(new Vector3(moveDirection.x, 0, moveDirection.z));
+		}
+		lastKillPos = playerPos;
+	}
+
+	float killPosDist() {
+		float dist = Mathf.Sqrt(Mathf.Pow(curPosition.x - lastKillPos.x, 2) + Mathf.Pow(curPosition.z - lastKillPos.z, 2));
+
+		return dist;
+	}
+
+	void reset (){
+		lastKillPos = curPosition;
+		randomDir();
 	}
 
 	void setPosition (Vector3 position){
@@ -114,7 +132,7 @@ public class Enemy : Humanoid {
 
 		//speed = Mathf.Round(speed);
 		sight = Mathf.Round(sight);
-		resistance = Mathf.Round(resistance);
+		//resistance = Mathf.Round(resistance);
 		strength = Mathf.Round(strength);
 
 		skinColor = Mathf.Round(skinColor);
@@ -127,12 +145,15 @@ public class Enemy : Humanoid {
 		transform.localScale += new Vector3(width * 0.5f, height * 0.5f, width * 0.5f);
 	}
 
-	void Start () {
-		rBody = GetComponent<Rigidbody>();
+	void randomDir () {		
 		moveDirection = new Vector3((Random.value * 2) - 1, 0, (Random.value * 2) - 1);
 		float vecLength = Mathf.Sqrt(Mathf.Pow(moveDirection.x, 2) + Mathf.Pow(moveDirection.z, 2));
 		moveDirection = new Vector3(moveDirection.x / vecLength, 0, moveDirection.z / vecLength);
+	}
 
+	void Start () {
+		rBody = GetComponent<Rigidbody>();
+		randomDir();
 		curPosition = transform.position;
 
 		getStats();
@@ -141,6 +162,9 @@ public class Enemy : Humanoid {
 
 	void Update () {
 		//calculateNeighbours();
+		if(killPosDist() > runDist + 1){
+			reset();
+		}
 
 		move ();
 		float rotY = Mathf.Atan2(moveDirection.x, moveDirection.z) / Mathf.PI * 180;
